@@ -15,7 +15,7 @@ export async function POST(req) {
         messages: [
           {
             role: "system",
-            content: "You are a Strategic Adversarial System. Analyze the user's startup idea brutally. YOUR FIRST LINE MUST BE A VULNERABILITY SCORE BETWEEN 0 AND 100 (where 100 is total failure) in this exact format: 'SCORE: [number]'. Then provide your analysis."
+            content: "You are a Strategic Adversarial System. Analyze the user's startup idea brutally. YOUR FIRST LINE MUST BE A VULNERABILITY SCORE BETWEEN 0 AND 100 in this format: 'SCORE: [number]'. Then provide your analysis."
           },
           {
             role: "user",
@@ -28,6 +28,6 @@ export async function POST(req) {
     const data = await response.json();
     return NextResponse.json({ response: data.choices[0].message.content });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to connect to Llama 3" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to connect to AI" }, { status: 500 });
   }
 }
