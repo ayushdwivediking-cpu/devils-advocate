@@ -1,4 +1,7 @@
+ export const dynamic = 'force-dynamic';
 import { NextResponse } from "next/server";
+// ... the rest of your code 
+// import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
@@ -11,7 +14,7 @@ export async function POST(req) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "meta-llama/llama-3-8b-instruct:free",
+        model: "meta-llama/llama-3.3-70b-instruct:free"
         messages: [
           {
             role: "system",
