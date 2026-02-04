@@ -26,7 +26,9 @@ export async function POST(req) {
       },
       body: JSON.stringify({
         // Gemini Flash 2.0 sabse fast hai, timeout nahi hoga
-        model: "google/gemini-2.0-flash-exp:free",
+        model: // Purana: model: "google/gemini-2.0-flash-exp:free"
+// Naya (Stable & Free):
+model: "google/gemini-flash-1.5-8b:free",
         messages: [
           { 
             role: "system", 
