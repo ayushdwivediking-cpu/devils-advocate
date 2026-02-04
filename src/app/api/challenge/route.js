@@ -16,7 +16,8 @@ export async function POST(req) {
       headers: {
         "Authorization": `Bearer ${apiKey.trim()}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://devils-advocate-auth.vercel.app", 
+        // headers ke andar ye line update karo
+"HTTP-Referer": "https://devils-advocate-engine.vercel.app", 
         "X-Title": "Devils Advocate AI",
       },
       body: JSON.stringify({
