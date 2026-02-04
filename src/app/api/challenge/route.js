@@ -8,8 +8,7 @@ export async function POST(req) {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
-      console.error("Missing API Key");
-      return NextResponse.json({ error: "OpenRouter API Key is not set in Vercel." }, { status: 500 });
+      return NextResponse.json({ error: "API Key missing" }, { status: 500 });
     }
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -35,14 +34,12 @@ export async function POST(req) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("OpenRouter Error Details:", data);
       return NextResponse.json({ error: data.error?.message || "OpenRouter Error" }, { status: response.status });
     }
 
     return NextResponse.json({ response: data.choices[0].message.content });
 
   } catch (error) {
-    console.error("Server Crash:", error);
-    return NextResponse.json({ error: "Internal Server Error: " + error.message }, { status: 500 });
+    return NextResponse.json({ error: "Server Error: " + error.message }, { status: 500 });
   }
 }
