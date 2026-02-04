@@ -8,6 +8,7 @@ export default function Home() {
   const [history, setHistory] = useState([]);
   const [progress, setProgress] = useState(0);
 
+  // Restore history logic exactly as you had it
   useEffect(() => {
     const savedHistory = localStorage.getItem("auditHistory");
     if (savedHistory) setHistory(JSON.parse(savedHistory));
@@ -17,14 +18,15 @@ export default function Home() {
     if (!text) return; 
     setLoading(true);
     setAudit("");
-    setProgress(10);
-
+    
+    // Your original Vulnerability Progress Logic
+    setProgress(15);
     const interval = setInterval(() => {
-      setProgress((prev) => (prev < 95 ? prev + 5 : prev));
-    }, 400);
+      setProgress((prev) => (prev < 90 ? prev + 8 : prev));
+    }, 300);
 
     try {
-      // API Path fix for Vercel Root
+      // Fixed API path for Vercel
       const response = await fetch("/api/challenge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -35,9 +37,10 @@ export default function Home() {
       clearInterval(interval);
       setProgress(100);
       
-      const result = data.error ? `SYSTEM_ERROR: ${data.error}` : data.response;
+      const result = data.error ? `SYSTEM_FAILURE: ${data.error}` : data.response;
       setAudit(result);
 
+      // Your original History Saving logic
       const newHistory = [{ idea: text, report: result }, ...history].slice(0, 5);
       setHistory(newHistory);
       localStorage.setItem("auditHistory", JSON.stringify(newHistory));
@@ -47,82 +50,77 @@ export default function Home() {
       setAudit("CRITICAL_ERROR: Node Connection Lost.");
     } finally {
       setLoading(false);
-      setTimeout(() => setProgress(0), 1000);
+      setTimeout(() => setProgress(0), 1500);
     }
   };
 
   return (
-    <main className="min-h-screen bg-black text-zinc-100 p-6 md:p-12 font-mono selection:bg-red-500/30">
-      <div className="max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="border-b border-zinc-800 pb-8 mb-12">
-          <h1 className="text-5xl font-black tracking-tighter text-red-600 mb-2">
-            DEVIL'S ADVOCATE
-          </h1>
-          <p className="text-zinc-500 text-sm tracking-[0.2em] uppercase">
-            Strategic Vulnerability Assessment Unit
-          </p>
+    <main className="min-h-screen bg-black text-white p-4 md:p-10 font-mono">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-10 border-l-4 border-red-600 pl-4">
+          <h1 className="text-4xl font-black uppercase tracking-tighter">Devil's Advocate</h1>
+          <p className="text-zinc-500 text-xs mt-1">Vulnerability Research & Strategic Audit Unit</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Input Section */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="relative bg-zinc-900/50 border border-zinc-800 p-1">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Audit Area */}
+          <div className="lg:col-span-3">
+            <div className="bg-zinc-900 border border-zinc-800 p-1">
               <textarea
-                className="w-full bg-black border-none p-6 text-xl text-white focus:ring-0 resize-none placeholder:text-zinc-700"
-                rows="8"
+                className="w-full bg-black border-none p-6 text-lg focus:ring-0 resize-none placeholder:text-zinc-800"
+                rows="10"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="INPUT STARTUP OPERATIONAL LOGIC..."
+                placeholder="ENTER SYSTEM ARCHITECTURE OR OPERATIONAL LOGIC..."
               />
               
+              {/* Your Original Progress Bar */}
               {progress > 0 && (
-                <div className="absolute bottom-0 left-0 h-1 bg-red-600 transition-all duration-300" 
-                     style={{ width: `${progress}%` }} />
+                <div className="h-1 bg-zinc-800 w-full">
+                  <div 
+                    className="h-full bg-red-600 transition-all duration-300" 
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
               )}
             </div>
 
             <button
               onClick={executeAudit}
               disabled={loading}
-              className="group relative w-full overflow-hidden bg-red-600 py-5 transition-all hover:bg-red-700 disabled:bg-zinc-800"
+              className="w-full mt-4 bg-red-600 hover:bg-red-700 py-4 font-bold tracking-[0.2em] transition-all disabled:bg-zinc-800"
             >
-              <span className="relative z-10 font-black tracking-[0.3em] text-white">
-                {loading ? "SCANNING VULNERABILITIES..." : "EXECUTE STRATEGIC AUDIT"}
-              </span>
+              {loading ? "SCANNING FOR VULNERABILITIES..." : "EXECUTE STRATEGIC AUDIT"}
             </button>
 
             {audit && (
-              <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="bg-zinc-900 border border-red-900/30 p-8 shadow-2xl">
-                  <div className="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
-                    <span className="text-red-500 font-bold tracking-widest text-sm">AUDIT_REPORT_V2.0</span>
-                    <span className="text-zinc-600 text-xs">{new Date().toLocaleTimeString()}</span>
-                  </div>
-                  <div className="text-zinc-300 leading-relaxed font-sans text-lg">
-                    {audit}
-                  </div>
+              <div className="mt-10 bg-zinc-900 border border-zinc-800 p-8 shadow-2xl">
+                <div className="text-red-600 font-bold mb-4 text-xs tracking-widest uppercase border-b border-zinc-800 pb-2">
+                  Final Audit Report
+                </div>
+                <div className="text-zinc-300 whitespace-pre-wrap leading-relaxed font-sans">
+                  {audit}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Sidebar / History Section */}
-          <div className="space-y-8">
-            <div className="border border-zinc-800 p-6 bg-zinc-900/20">
-              <h3 className="text-zinc-500 text-xs font-bold tracking-widest uppercase mb-6">Execution History</h3>
-              {history.length === 0 ? (
-                <p className="text-zinc-700 text-xs italic">No previous logs found...</p>
-              ) : (
-                <div className="space-y-4">
-                  {history.map((item, i) => (
-                    <div key={i} className="group border-l border-zinc-800 pl-4 py-2 hover:border-red-600 transition-colors">
-                      <p className="text-zinc-400 text-sm truncate uppercase tracking-tighter">{item.idea}</p>
-                      <span className="text-[10px] text-zinc-600 font-bold uppercase">Stored_Archive</span>
+          {/* Your Original History Section */}
+          <div className="lg:col-span-1">
+            <div className="bg-zinc-900/50 border border-zinc-800 p-4 h-full">
+              <h3 className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest mb-4">Execution Logs</h3>
+              <div className="space-y-4">
+                {history.length === 0 ? (
+                  <div className="text-zinc-800 text-xs">No previous archives found.</div>
+                ) : (
+                  history.map((item, i) => (
+                    <div key={i} className="border-b border-zinc-800 pb-3">
+                      <p className="text-zinc-400 text-xs truncate uppercase">{item.idea}</p>
+                      <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-tighter">Status: Archived</span>
                     </div>
-                  ))}
-                </div>
-              )}
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>
